@@ -1,4 +1,5 @@
 package ec.edu.espol;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class Juego {
     private static Carta ultimaCarta;
@@ -20,29 +21,10 @@ public class Juego {
         }
 
         int turno = 1;
-        boolean enJuego = true;
         Scanner sc = new Scanner(System.in);
+        while (jugador.getMano().size() != 0 && maquina.getMano().size() != 0 && (baraja.getBaraja().size() != 0 || (baraja.getBaraja().size() == 0 && jugador.verificarExistenciaCarta(ultimaCarta) && maquina.verificarExistenciaCarta(ultimaCarta)))) {
 
-        while (enJuego) {
-            if (jugador.getMano().size() == 0) {
-                System.out.println("¡Jugador ha ganado! 🥳🏆");
-                enJuego = false;
-            } else if (maquina.getMano().size() == 0) {
-                System.out.println("¡Máquina ha ganado! 🥳🏆");
-                enJuego = false;
-            }
-
-            if (!enJuego) {
-                return;
-            }
-
-            System.out.println();
-            System.out.println("========================================");
-            System.out.println(jugador);
-            System.out.println(maquina);
-            System.out.println("Carta en juego: " + ultimaCarta);
-            System.out.println("========================================");
-            System.out.println();
+            Utilitaria.mostrarEstadoDelJuego(jugador, maquina, ultimaCarta);
 
             if (turno == 1) {
                 if (jugador.verificarExistenciaCarta(ultimaCarta)) {
@@ -65,49 +47,58 @@ public class Juego {
 
                     // Efectos de la carta
                     if (cartaRemovida.getTipo().equals("+2")) {
-                        Carta carta1 = baraja.robarCarta();
-                        Carta carta2 = baraja.robarCarta();
-                        if (carta1 == null || carta2 == null) {
-                            System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                            enJuego = false;
-                            return;
+                        ArrayList<Carta> cartas = new ArrayList<>();
+                        for(int i = 0; i < 2; i++){
+                            Carta carta1 = baraja.robarCarta();
+                            if(carta1 != null){
+                                maquina.getMano().add(carta1);
+                                cartas.add(carta1);
+                                System.out.println("Se agrego esta carta a máquina: "+ carta1);
+                                turno = 2;
+                            }
                         }
-                        maquina.getMano().add(carta1);
-                        maquina.getMano().add(carta2);
-                        System.out.println("Se agregaron dos cartas a la mano de la Máquina.");
-                        turno = 2;
-                    } else if (cartaRemovida.getTipo().equals("+4")) {
+                        if(cartas.size() == 2 ){
+                            ultimaCarta = cartaRemovida;
+                            System.out.println("Carta en juego: " + ultimaCarta);
+                            //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
+                        }
+                    }                    
+                    else if (cartaRemovida.getTipo().equals("+4")) {
+                        ArrayList<Carta> cartas = new ArrayList<>();
                         for (int i = 0; i < 4; i++) {
                             Carta carta = baraja.robarCarta();
-                            if (carta == null) {
-                                System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                                enJuego = false;
-                                return;
+                            if(carta != null){
+                                maquina.getMano().add(carta);
+                                cartas.add(carta);
+                                System.out.println("Se agrego esta carta a maquina: " + carta);
+                                turno = 2;
                             }
-                            maquina.getMano().add(carta);
                         }
-                        System.out.println("Se agregaron cuatro cartas a la mano de la Máquina.");
-                        turno = 2;
+                        if(cartas.size() == 4){
+                            ultimaCarta = cartaRemovida;
+                            System.out.println("Carta en juego: " + ultimaCarta);
+                            //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
+                        }
                     } else if (cartaRemovida.getTipo().equals("^") || cartaRemovida.getTipo().equals("&")) {
                         // Turno permanece con el jugador actual
+                        ultimaCarta = cartaRemovida;
+                        System.out.println("Carta en juego: " + ultimaCarta);
                     } else {
                         turno = 2;
+                        ultimaCarta = cartaRemovida;
+                        System.out.println("Carta en juego: " + ultimaCarta);
                     }
-                    ultimaCarta = cartaRemovida;
-                    System.out.println("Carta en juego: " + ultimaCarta);
                     if (jugador.getMano().size() == 1) {
                         System.out.println("Jugador: ¡UNOOOOOOOOOOOOO!");
                     }
                 } else {
                     Carta carta = baraja.robarCarta();
-                    if (carta == null) {
-                        System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                        enJuego = false;
-                        return;
+                    if (carta != null) {
+                        jugador.getMano().add(carta);
+                        System.out.println("Carta añadida a tu mano: " + carta);
+                        turno = 2;
+                        //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
                     }
-                    jugador.getMano().add(carta);
-                    System.out.println("Carta añadida a tu mano: " + carta);
-                    turno = 2;
                 }
             } 
             else {
@@ -115,62 +106,72 @@ public class Juego {
                     Carta cartaRemovida = maquina.jugarCarta(ultimaCarta);
                     if (cartaRemovida != null) {
                         if (cartaRemovida.getTipo().equals("+2")) {
-                            Carta carta1 = baraja.robarCarta();
-                            Carta carta2 = baraja.robarCarta();
-                            if (carta1 == null || carta2 == null) {
-                                System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                                enJuego = false;
-                                return;
+                            ArrayList<Carta> cartas = new ArrayList<>();
+                            for(int i = 0; i < 2; i++){
+                                Carta carta1 = baraja.robarCarta();
+                                if(carta1 != null){
+                                    jugador.getMano().add(carta1);
+                                    cartas.add(carta1);
+                                    System.out.println("Se agrego esta carta a jugador: "+ carta1);
+                                    turno = 1;
+                                }
                             }
-                            jugador.getMano().add(carta1);
-                            jugador.getMano().add(carta2);
-                            System.out.println("Se agregaron dos cartas a tu mano.");
-                            turno = 1;
+                            if(cartas.size() == 2 ){
+                                ultimaCarta = cartaRemovida;
+                                System.out.println("Carta en juego: " + ultimaCarta);
+                            }
                         } else if (cartaRemovida.getTipo().equals("+4")) {
+                            ArrayList<Carta> cartas = new ArrayList<>();
                             for (int i = 0; i < 4; i++) {
                                 Carta carta = baraja.robarCarta();
-                                if (carta == null) {
-                                    System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                                    enJuego = false;
-                                    return;
+                                if(carta != null){
+                                    jugador.getMano().add(carta);
+                                    cartas.add(carta);
+                                    System.out.println("Se agrego esta carta a jugador: " + carta);
+                                    turno = 1;
                                 }
-                                jugador.getMano().add(carta);
                             }
-                            System.out.println("Se agregaron cuatro cartas a tu mano.");
-                            turno = 1;
+                            if(cartas.size() == 4){
+                                ultimaCarta = cartaRemovida;
+                                System.out.println("Carta en juego: " + ultimaCarta);
+                            }
                         } else if (cartaRemovida.getTipo().equals("^") || cartaRemovida.getTipo().equals("&")) {
                             // Turno permanece con la máquina
+                            ultimaCarta = cartaRemovida;
+                            System.out.println("Carta en juego: " + ultimaCarta);
                         } else {
                             turno = 1;
+                            ultimaCarta = cartaRemovida;
+                            System.out.println("Carta en juego: " + ultimaCarta);
                         }
-                        ultimaCarta = cartaRemovida;
-                        System.out.println("La máquina juega: " + ultimaCarta);
                         if (maquina.getMano().size() == 1) {
                             System.out.println("Máquina: ¡UNOOOOOOO!");
                         }
                     } else {
                         Carta carta = baraja.robarCarta();
-                        if (carta == null) {
-                            System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                            enJuego = false;
-                            return;
+                        if (carta != null) {
+                            maquina.getMano().add(carta);
+                            System.out.println("Carta añadida a la mano de la máquina: " + carta);
+                            turno = 1;
                         }
+                    }
+                } else {
+                    Carta carta = baraja.robarCarta();
+                    if (carta != null) {
                         maquina.getMano().add(carta);
                         System.out.println("Carta añadida a la mano de la máquina: " + carta);
                         turno = 1;
                     }
-                } else {
-                    Carta carta = baraja.robarCarta();
-                    if (carta == null) {
-                        System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
-                        enJuego = false;
-                        return;
-                    }
-                    maquina.getMano().add(carta);
-                    System.out.println("Carta añadida a la mano de la máquina: " + carta);
-                    turno = 1;
                 }
             }
+            if (jugador.getMano().size() == 0) {
+                System.out.println("¡Jugador ha ganado! 🥳🏆");
+            } else if (maquina.getMano().size() == 0) {
+                System.out.println("¡Máquina ha ganado! 🥳🏆");
+            }
+        }
+        if(baraja.getBaraja().size() == 0){
+            System.out.println("No hay más cartas en la baraja. El juego termina en empate.");
         }
         sc.close();
     }

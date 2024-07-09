@@ -28,9 +28,15 @@ public class Jugador {
         Carta cartaSeleccionada = getMano().get(i);
         if (cartaSeleccionada.getColor().equals("N")) {
             Scanner sc = new Scanner(System.in);
-            System.out.println("¿A que color desea cambiar la carta? ==> ");
-            String color = sc.nextLine();
-            cartaSeleccionada.setColor(color);
+            String color = "";
+            while(!color.equalsIgnoreCase("A")&& !color.equalsIgnoreCase("Z") && !color.equalsIgnoreCase("V") &&  !color.equalsIgnoreCase("R")){
+                System.out.println("¿A que color desea cambiar la carta? ==> ");
+                color = sc.nextLine();
+                if(!color.equalsIgnoreCase("A")&&  !color.equalsIgnoreCase("Z") &&  !color.equalsIgnoreCase("V") &&  !color.equalsIgnoreCase("R")){
+                    System.out.println("Color incorrecto, debes! elegir entre (A-Z-V-R)");
+                }
+            }
+            cartaSeleccionada.setColor(color.toUpperCase());
             return mano.remove(i);
         } else if (cartaSeleccionada.getColor().equals(c.getColor()) || cartaSeleccionada.getTipo().equals(c.getTipo())) {
             return mano.remove(i);
