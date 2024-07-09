@@ -60,7 +60,6 @@ public class Juego {
                         if(cartas.size() == 2 ){
                             ultimaCarta = cartaRemovida;
                             System.out.println("Carta en juego: " + ultimaCarta);
-                            //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
                         }
                     }                    
                     else if (cartaRemovida.getTipo().equals("+4")) {
@@ -77,7 +76,6 @@ public class Juego {
                         if(cartas.size() == 4){
                             ultimaCarta = cartaRemovida;
                             System.out.println("Carta en juego: " + ultimaCarta);
-                            //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
                         }
                     } else if (cartaRemovida.getTipo().equals("^") || cartaRemovida.getTipo().equals("&")) {
                         // Turno permanece con el jugador actual
@@ -97,7 +95,6 @@ public class Juego {
                         jugador.getMano().add(carta);
                         System.out.println("Carta añadida a tu mano: " + carta);
                         turno = 2;
-                        //Se manda un mensaje fuera del while de "La baraja se quedo sin cartas"(profe si se puede hacer esto)
                     }
                 }
             } 
